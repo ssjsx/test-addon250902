@@ -288,3 +288,13 @@ The publish will be accumulated. So if you have multiple packages need to be rel
 
 If you want to remove one of the previous publish. You could done that by running ```wpsjs unpublish``` under the coresponding addon folder.
 ## Development
+
+### ribbon.js
+For all the button on the menu bar. The ```src/components/ribbon.js``` implements all the interactions, the ribbon components has different lifecycle to control the specific actions in behind.
+
+- ```OnAddinLoad```:
+This is for the addon environment initilization. It takes ```ribbonUI``` as input and passes it to the global ```Application.ribbonUI```.
+- ```OnAction```: 
+This is where we bind the action to the menu buttons. The ```OnAction``` takes ```control``` as input, which can be used to enumerate over the ```control.Id``` for different actions. The Id was defined in the ***public/ribbon.xml*** associates with the buttons.
+- **Others**:
+The ribbon component could also take the customized methods for events that need to be listened globally, or define the actions that need to be binded with the ribbon.xml which need to be shown on the menu bar.

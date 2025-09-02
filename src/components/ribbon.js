@@ -28,7 +28,7 @@ var ribbon = {
         switch (eleId) {
             case "btnShowMsg":
                 {
-                    const doc = window.Application.ActiveDocument
+                    const doc = window.Application.ActiveWorkbook
                     if (!doc) {
                         alert("当前没有打开任何文档")
                         return
@@ -88,6 +88,7 @@ var ribbon = {
                 }
                 break
             default:
+                console.log("未知按钮点击事件")
                 break
         }
         return true
