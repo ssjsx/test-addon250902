@@ -30,7 +30,7 @@ wps create addon-$version
 ```
 And you should see something like below right away:
 
-![init step 1](./img/screenshot%202025-09-02%20102625.png)
+![init step 1](img/screenshot%202025-09-02%20102625.png)
 
 There are three options listed here that specifies different type of addon targets:
 ```bash
@@ -44,7 +44,7 @@ Choose the one that is required. In this document, the ```excel``` was chosen.
 
 Once the ```excel``` was chosen. You should be able to see below:
 
-![init step 2](./img/screenshot%202025-09-02%20103454.png)
+![init step 2](img/screenshot%202025-09-02%20103454.png)
 
 It is translated into below
 ```bash
@@ -59,11 +59,11 @@ Choose the ```React``` and wait the wpsjs to install the dependencies for the de
 
 If the installation is completed successfully, you would see the guide for you to start the project like below.
 
-![Complete init](./img/screenshot%202025-09-02%20104258.png)
+![Complete init](img/screenshot%202025-09-02%20104258.png)
 
 Now, check your directory using ```ls```, you would see a vite based javascript project was created under your chosen folder.
 
-![Complete init](./img/screenshot%202025-09-02%20103932.png)
+![Complete init](img/screenshot%202025-09-02%20103932.png)
 
 If you can see the listed files above. That means your installation is completed successfully. Now you could try run the command:
 ```bash
@@ -93,6 +93,6 @@ Once you ran the command ```wpsjs debug```. The addon project will start with de
 
 On the WPS table file that just be started. You will find the entrance button ```wps加载项示例``` for the addon project on menu bar to the far right end. Click on the ```wps加载项示例```, you would see serval buttons were created already for quick customization like below.
 
-![entrance](./img/screenshot%202025-09-02%20105546.png)
+![entrance](img/screenshot%202025-09-02%20105546.png)
 
 It is also show you the basic interaction and help you to understand how the code and UI are incoorperated.
