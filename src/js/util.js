@@ -12,7 +12,37 @@ function GetUrlPath() {
     return e
 }
 
+function TestSetCellFormula() 
+{
+	var cells = Application.ActiveWorkbook.ActiveSheet.Cells;
+	let date = new Date();
+	let start = date.getTime();
+	for(var i = 1; i <= 10; ++i) 
+	{ 
+		for(var j = 1; j <= 10; ++j) 
+		{
+			cells.Item(i, j).Formula = i + j; 
+		} 
+	} 
+	date = new Date(); 
+	let end = date.getTime(); 
+	alert(end - start); return; 
+}
+
+function Test() {
+    console.log("Test function called");
+}
+
+function test2() {
+    Application.Worksheets.Item("Sheet1").Activate()
+    //Range is on the active sheet
+    Application.Range("A1:H8").Formula = "=Rand()"
+}
+
 export default {
     WPS_Enum,
-    GetUrlPath
+    GetUrlPath,
+    TestSetCellFormula,
+    Test,
+    test2
 }

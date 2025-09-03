@@ -1,3 +1,4 @@
+import Util from '@/js/util.js'; 
 /**
  * 这是一个加载项自定义函数
  * @customfunction
@@ -25,6 +26,7 @@ function custom_function(arg0, arg1, arg2, arg3, arg4) {
 function custom_test_function(arg0, arg1, arg2) {
     let argAndType = (arg) => `${arg}: ${typeof arg}`
     let argAndTypeList = [arg0, arg1, arg2].map(argAndType)
+    Util.test2()
     let message = `This is a custom test function with input (${argAndTypeList.join(', ')})`
     console.log(message)
     return message
