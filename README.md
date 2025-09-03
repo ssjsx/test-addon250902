@@ -60,7 +60,7 @@ It is translated into below
 
 Choose the ```React``` and wait the wpsjs to install the dependencies for the development. Ignore the warinings during the installation for now. 
 
-If the installation is completed successfully, you would see the guide for you to start the project like below.
+If the installation was completed successfully, you would see the guide for you to start the project like below.
 
 ![Complete init](./img/screenshot_2025-09-02_104258.png)
 
@@ -68,7 +68,7 @@ Now, check your directory using ```ls```, you would see a vite based javascript 
 
 ![Complete init](./img/screenshot_2025-09-02_103932.png)
 
-If you can see the listed files above. That means your installation is completed successfully. Now you could try run the command:
+If you can see the listed files above. That means your installation has completed successfully. Now you could try run the command:
 ```bash
 wpsjs debug
 ```
@@ -280,17 +280,17 @@ Mode                 LastWriteTime         Length Name
 ----                 -------------         ------ ----
 -a----          2025/9/2     15:07          45757 publish.html
 ```
-The ```publish.html``` then will need to be distributed to the users offline or online. If they open locally or open it with the url you provided on the server, for example http://127.0.0.1/publish.html, they will see
+The ```publish.html``` then will need to be distributed to the users offline or online. If they open locally or open it with the url you provided on the server, for example http://127.0.0.1/publish.html, they would see:
 
 ![publish.html](./img/screenshot_2025-09-02_153053.png)
 
-The publish will be accumulated. So if you have multiple packages need to be released. Only the last publish need to be deployed. 
+The publishes will be accumulated. So if you have multiple packages need to be released. Only the last publish need to be deployed. 
 
 If you want to remove one of the previous publish. You could done that by running ```wpsjs unpublish``` under the coresponding addon folder.
 ## Development
 
 ### ribbon.js
-For all the button on the menu bar. The ```src/components/ribbon.js``` implements all the interactions, the ribbon components has different lifecycle to control the specific actions in behind.
+For all the buttons on the menu bar. The ```src/components/ribbon.js``` implements all the interactions, the ribbon components has different lifecycle to control the specific actions in behind.
 
 - ```OnAddinLoad```:
 This is for the addon environment initilization. It takes ```ribbonUI``` as input and passes it to the global ```Application.ribbonUI```.
