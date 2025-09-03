@@ -301,9 +301,9 @@ Defines the atomic data types of UI components. All attribute values ​​are b
 |Name|Type|Value|Description|
 |----------------|----|-----|-----------|
 |ST_QID	|xsd:QName	| 1-1024 characters	|Qualified ID (used when sharing controls across plugins, such as ```idQ```)|
-|ST_ID	|xsd:NCName	| 1-1024 characters	|Custom control ID (such as ```id```) or built-in control ID (such as ```idMso```)|
+|ST_ID	|xsd:NCName	| 1-1024 characters	|Custom control ID (such as ```id```) or built-in control ID (such as ```idMso```, usage of built-in control IDs can be found in the [ribboncreator2010.de - Excel](https://www.ribboncreator2010.de/Onlinehelp/EN/_2hm0n7htf.htm) or [ribboncreator2010.de - Word](https://www.ribboncreator2010.de/Onlinehelp/EN/_2hm0n9inj.htm))|
 |ST_UniqueID	|xsd:ID	| 1-1024 characters, unique	|Globally unique control ID (such as id)|
-|ST_Delegate	|xsd:string	| 1-1024 characters	|Callback function name (such as ```onAction```, ```getEnabled```, associated with ribbon.js logic)|
+|ST_Delegate	|xsd:string	| 1-1024 characters	|Callback function name (such as ```onAction```, ```getEnabled```, associated with ribbon.js functions)|
 |ST_Size	|enum (xsd:string)	| only ```normal```/```large```	|Button/menu size (such as large button, small button)|
 |ST_BoxStyle	|enum (xsd:string)	| only ```horizontal```/```vertical```	|Box container layout direction (horizontal/vertical grouping controls)|
 |ST_Keytip	|xsd:token	|1-3 letters/digits, no spaces	|Shortcut key tip (such as press Alt+MT to open the custom tab)|
@@ -322,7 +322,7 @@ Packaging commonly used attributes into attribute groups (```xsd:attributeGroup`
 | **UI Related** |
 |AG_Enabled|	```enabled``` (boolean), ```getEnabled```（ST_Delegate）|	Whether the control is enabled	|Choose one of the two (use ```enabled``` for static configuration, use ```getEnabled``` callback for dynamic)|
 |AG_Visible|	```visible``` (boolean), ```getVisible```（ST_Delegate）|	Whether the control is visible	|Same logic as AG_Enabled|
-|AG_Image|	```image``` (path), ```imageMso``` (built-in image), ```getImage``` (callback)|	Control image	|Choose one of the three (use ```image``` for custom image, use ```imageMso``` for built-in image)|
+|AG_Image|	```image``` (path), ```imageMso``` (built-in image, the list of values could be referred from [Bert Toolkit (with icon preview)](https://bert-toolkit.com/imagemso-list.html) or [Microsoft document](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/fe2124a1-5aaa-4adf-b285-5d58da9d5e2a)), ```getImage``` (callback)|	Control image	|Choose one of the three (use ```image``` for custom image, use ```imageMso``` for built-in image)|
 |AG_Screentip|	```screentip``` (short tip), ```supertip``` (long tip) + corresponding callback|	Mouse hover tip	|For example, ```supertip="Click to save the current document"```|
 | **Layout & Interaction** |
 |AG_PositionAttributes|	```insertAfterMso```/```insertBeforeMso```/```insertAfterQ```/```insertBeforeQ```| Control insertion position| Select one of four options (e.g., ```insertAfterMso="HomeTab"``` inserts after the Home tab).|
@@ -377,11 +377,11 @@ Inheritance Restrictions: Some controls prohibit attributes of their parent type
 - The split button (```CT_SplitButton```) prohibits ```label``` (the label is inherited by the inner button).
 
 ### ribbon.js
-For all the buttons on the menu bar. The ```src/components/ribbon.js``` implements all the interactions, the ribbon components has different lifecycle to control the specific actions in behind.
+For all the buttons on the menu bar, the ```src/components/ribbon.js``` implements all the interactions, the ribbon components has different lifecycles to control the specific actions in behind.
 
 - ```OnAddinLoad```:
 This is for the addon environment initilization. It takes ```ribbonUI``` as input and passes it to the global ```Application.ribbonUI```.
 - ```OnAction```: 
-This is where we bind the action to the menu buttons. The ```OnAction``` takes ```control``` as input, which can be used to enumerate over the ```control.Id``` for different actions. The Id was defined in the ***public/ribbon.xml*** associates with the buttons.
+This is where we bind the action to the menu buttons. The ```OnAction``` takes ```control``` as input, which can be used to enumerate over the ```control.Id``` for different actions. The ```Id``` was defined in the ***public/ribbon.xml*** associates with the buttons.
 - **Others**:
 The ribbon component could also take the customized methods for events that need to be listened globally, or define the actions that need to be binded with the ribbon.xml which need to be shown on the menu bar.
