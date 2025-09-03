@@ -289,6 +289,91 @@ The publishes will be accumulated. So if you have multiple packages need to be r
 If you want to remove one of the previous publish. You could done that by running ```wpsjs unpublish``` under the coresponding addon folder.
 ## Development
 
+### ribbon.xml
+The ```ribbon.xml``` is the configuration file for the ribbon UI in the WPS add-in. It defines the structure and behavior of the ribbon, including tabs, groups, and controls (buttons, edit boxes, etc.). This file is essential for customizing the user interface and providing a seamless experience for users.
+
+It follows the [Office UI XML schema 2006](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/5f3e35d6-70d6-47ee-9e11-f5499559f93a). There are five main types of modules, and each depends on the others in a hierarchical manner. They are **Attribute types**, **Attribute**, **Controls**, **Containers**, and **Root elements**.
+
+#### Attribute types
+Defines the atomic data types of UI components. All attribute values ​​are based on these types to ensure data legitimacy.
+|Name|Type|Value|Description|
+|----------------|----|-----|-----------|
+|ST_QID	|xsd:QName	| 1-1024 characters	|Qualified ID (used when sharing controls across plugins, such as ```idQ```)|
+|ST_ID	|xsd:NCName	| 1-1024 characters	|Custom control ID (such as ```id```) or built-in control ID (such as ```idMso```)|
+|ST_UniqueID	|xsd:ID	| 1-1024 characters, unique	|Globally unique control ID (such as id)|
+|ST_Delegate	|xsd:string	| 1-1024 characters	|Callback function name (such as ```onAction```, ```getEnabled```, associated with ribbon.js logic)|
+|ST_Size	|enum (xsd:string)	| only ```normal```/```large```	|Button/menu size (such as large button, small button)|
+|ST_BoxStyle	|enum (xsd:string)	| only ```horizontal```/```vertical```	|Box container layout direction (horizontal/vertical grouping controls)|
+|ST_Keytip	|xsd:token	|1-3 letters/digits, no spaces	|Shortcut key tip (such as press Alt+MT to open the custom tab)|
+|ST_String	|xsd:string	|1-1024 characters	|Plain text (such as control label, tooltip)|
+|ST_LongString	|xsd:string	|1-4096 characters	|Long text (such as control extended description)|
+
+#### Attribute
+Packaging commonly used attributes into attribute groups (```xsd:attributeGroup```) to avoid repeated definitions is the "attribute template" of controls/containers.
+
+|Name|Value|Description|Rules|
+|----|-----|-----------|-----|
+| **ID Related** |
+|AG_IDCustom|	id（ST_UniqueID）、idQ（ST_QID）|	Custom control ID	|Choose one of the two (```id``` is globally unique, ```idQ``` is used to share across plugins)|
+|AG_IDMso|	idMso（ST_ID）|	Reference Office built-in controls	|For example, ```idMso="FileSave"``` references the "Save" button|
+|AG_IDAttributes|	Combination of AG_IDCustom + AG_IDMso + AG_Tag|	Unified control ID configuration	|Must select one ID type (```id```/```idMso```/```idQ```)|
+| **UI Related** |
+|AG_Enabled|	enabled (boolean), getEnabled（ST_Delegate）|	Whether the control is enabled	|Choose one of the two (use enabled for static configuration, use getEnabled callback for dynamic)|
+|AG_Visible|	visible (boolean), getVisible（ST_Delegate）|	Whether the control is visible	|Same logic as AG_Enabled|
+|AG_Image|	image (path), imageMso (built-in image), getImage (callback)|	Control image	|Choose one of the three (use image for custom image, use imageMso for built-in image)|
+|AG_Screentip|	screentip (short tip), supertip (long tip) + corresponding callback|	Mouse hover tip	|For example, ```supertip="Click to save the current document"```|
+| **Layout & Interaction** |
+|AG_PositionAttributes| insertAfterMso/insertBeforeMso/insertAfterQ/insertBeforeQ| Control insertion position| Select one of four options (e.g., ```insertAfterMso="HomeTab"``` inserts after the Home tab).|
+|AG_Action| onAction (ST_Delegate)| User action callback| such as ```onAction="ButtonClick"``` triggered by a button click (associated with a ribbon.js function).|
+|AG_DropDownAttributes| getItemCount/getItemLabel/sizeString| Drop-down controls (combo boxes, galleries) |use this to dynamically load drop-down items (e.g., getItemCount returns the number of items in the drop-down).|
+
+#### Controls
+Defines all controls that can be used in WPS UI, based on inheritance relationship extension (such as ```CT_Button``` inherits from ```CT_ButtonRegular```)
+
+|Name|	Parent Type|Description|Key Attributes/Child Elements|
+|----|-----|-----------|-----|
+|CT_Button|	CT_ButtonRegular|	Resizable buttons|	Inherit ```AG_SizeAttributes``` (```size="large"```), ```onAction```|
+|CT_ToggleButton|	CT_ToggleButtonRegular|	Toggle buttons (e.g., "Bold")|	Add ```getPressed``` callback (returns pressed state)|
+|CT_CheckBox|	CT_ToggleButtonRegular|	Check boxes|	Disable image attribute (only show text and check state)|
+|CT_EditBox|	CT_Control|	Text input boxes|	Add ```maxLength``` (maximum character count), ```onChange``` (content change callback)|
+|CT_ComboBox|	CT_EditBox|	Drop-down combo boxes|	Contains ```<item>``` child elements (0-1000), ```AG_DropDownAttributes```|
+|CT_Gallery|	CT_GalleryRegular|	Gallery controls (e.g., "Styles" list)|	Add ```columns``` (number of columns), ```itemWidth``` (item width)|
+|CT_Menu|	CT_MenuRegular|	Drop-down menus|	Contains button / checkbox and other child controls, ```itemSize``` (menu item size)|
+|CT_SplitButton|	CT_SplitButtonRegular|	Split buttons (left click, right drop-down)|	Contains ```<button>```, ```<toggleButton>``` and ```<menu>``` child elements|
+
+#### Containers
+Used to organize *Controls* to form a UI hierarchy (such as "tab → group → control").
+
+|Name|Description|Key Attributes/Child Elements|
+|----|-----------|-----|
+|CT_Group|	Groups of controls within tabs (such as the Font group on the Home tab)|	Contains controls/separators (```<separator>```), optional ```<dialogBoxLauncher>``` (dialog box launcher)|
+|CT_Tab|	Ribbon tabs (such as Home, Insert) |	Contains ```<group>``` (0-100), ```label``` (tab name)|
+|CT_Box|	Horizontal/Vertical grouping controls (e.g., arranging multiple buttons in a row)|	Contains any controls (0-1000), ```boxStyle="horizontal"``` (horizontal layout)|
+|CT_Qat|	Quick Access Toolbar (top small toolbar)|	Contains ```<sharedControls>``` (shared across all documents) and ```<documentControls>``` (document-specific)|
+|CT_ContextualTabs|	Contextual tabs (e.g., "Picture Format" when an image is selected)|	Contains ```<tabSet>``` (contextual tab group), ```idMso``` (associated built-in contextual scene)|
+
+#### Root elements
+The entry of the custom UI XML file. All UI configurations are nested in the root element.
+
+|Name|Complex Type|Description|Key Attributes/Child Elements|
+|----|----|-----------|-----|
+|```<customUI>```|	CT_CustomUI	|The root of the custom UI|Contains ```<commands>``` (control property override) and ```<ribbon>``` (ribbon configuration), onLoad (UI loading callback, passing IRibbonUI object)|
+|```<menu>```|	CT_MenuRoot	|The root of the dynamic menu (returned by getContent callback)|	Contains menu controls (buttons / checkboxes, etc.), ```title``` (menu title)|
+|```<commands>```|	CT_Commands	|Batch override built-in control properties|	Contains```<command>``` (e.g., disable all "Print" buttons: ```<command idMso="Print" enabled="false"/>```)|
+
+#### Key Rules: Avoiding Configuration Errors
+Attribute Mutual Exclusivity: Attributes within some attribute groups cannot be used simultaneously. 
+- AG_Image requires **only** one of ```image```, ```imageMso```, or ```getImage```;
+- AG_PositionAttributes requires **only** one of the four insertion position attributes.
+
+Required Attributes: Some attributes/sub-elements must be configured. 
+- The dynamic menu (```CT_DynamicMenu```) must have a ```getContent``` callback (AG_GetContentAttributes);
+- The control referenced by ```<customUI>``` must have a unique ID (one of ```id```, ```idMso```, or ```idQ```).
+
+Inheritance Restrictions: Some controls prohibit attributes of their parent type. 
+- The label control (```CT_LabelControl```) prohibits ```image``` (cannot display images) and ```keytip``` (no shortcut keys);
+- The split button (```CT_SplitButton```) prohibits ```label``` (the label is inherited by the inner button).
+
 ### ribbon.js
 For all the buttons on the menu bar. The ```src/components/ribbon.js``` implements all the interactions, the ribbon components has different lifecycle to control the specific actions in behind.
 

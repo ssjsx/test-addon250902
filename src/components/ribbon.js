@@ -45,7 +45,7 @@ var ribbon = {
                     window.Application.ribbonUI.InvalidateControl("btnIsEnbable")
                     window.Application.ribbonUI.InvalidateControl("btnShowDialog")
                     window.Application.ribbonUI.InvalidateControl("btnShowTaskPane")
-                    //window.Application.ribbonUI.Invalidate(); 这行代码打开则是刷新所有的按钮状态
+                    // window.Application.ribbonUI.Invalidate();  // 这行代码打开则是刷新所有的按钮状态
                     break
                 }
             case "btnShowDialog":

@@ -11,7 +11,6 @@
                         getImage="ribbon.GetImage"
                         visible="true"
                         size="large"
-                        screentip="点击弹出消息框"
                     />
                     <button
                         id="btnIsEnbable"
