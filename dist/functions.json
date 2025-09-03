@@ -33,6 +33,30 @@
       "result": {
         "type": "number"
       }
+    },
+    {
+      "name": "custom_test_function",
+      "parameters": [
+        {
+          "name": "arg0",
+          "description": "string",
+          "type": "string"
+        },
+        {
+          "name": "arg1",
+          "description": "number",
+          "type": "number"
+        },
+        {
+          "name": "arg2",
+          "description": "boolean",
+          "type": "boolean"
+        }
+      ],
+      "description": "This is a custom test function",
+      "result": {
+        "type": "string"
+      }
     }
   ]
 }

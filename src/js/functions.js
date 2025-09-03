@@ -14,3 +14,18 @@ function custom_function(arg0, arg1, arg2, arg3, arg4) {
     return message
 }
 
+/**
+ * This is a custom test function
+ * @customfunction
+ * @param {string} arg0 - string
+ * @param {number} arg1 - number
+ * @param {boolean} arg2 - boolean
+ * @returns {string} - return as a string
+ */
+function custom_test_function(arg0, arg1, arg2) {
+    let argAndType = (arg) => `${arg}: ${typeof arg}`
+    let argAndTypeList = [arg0, arg1, arg2].map(argAndType)
+    let message = `This is a custom test function with input (${argAndTypeList.join(', ')})`
+    console.log(message)
+    return message
+}
