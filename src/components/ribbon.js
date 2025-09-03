@@ -26,6 +26,12 @@ var ribbon = {
     OnAction: function(control) {
         const eleId = control.Id
         switch (eleId) {
+            case "btnShowMso":
+                {
+                    const menuBar = window.Application.ActiveMenuBar
+                    console.log(menuBar)
+                }
+                break;
             case "btnShowMsg":
                 {
                     const doc = window.Application.ActiveWorkbook

@@ -1,23 +1,25 @@
 <customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui" onLoad="ribbon.OnAddinLoad">
     <ribbon startFromScratch="false">
         <tabs>
-            <tab id="wpsAddinTab" label="wps加载项示例">
+            <tab id="wpsAddinTab" label="wps addon test" insertAfterMso="TabHome">
                 <group id="btnDemoGroup" label="group1">
                     <!-- 一键求和按钮 -->
-                    <button id="SumButton" 
+                    <button id="btnShowMso" 
                         label="一键求和" 
                         imageMso="AutoSum" 
-                        onAction="RunSumMacro"  
+                        onAction="ribbon.OnAction"  
                         screentip="快速求和" 
                         supertip="选中区域后，点击自动计算求和结果"
                     />
                     
                     <!-- 文本输入框 -->
-                    <editBox id="InputBox" 
-                            label="输入备注" 
-                            maxLength="50"  
-                            onChange="InputChanged"  
-                            sizeString="这是一个参考字符串，决定输入框宽度"/>
+                    <editBox 
+                        id="InputBox" 
+                        insertAfterMso="wpsAddinTab"
+                        label="输入备注" 
+                        maxLength="50"  
+                        onChange="InputChanged"  
+                        sizeString="这是一个参考字符串，决定输入框宽度"/>
                     <button
                         id="btnShowMsg"
                         label="弹出消息框"
@@ -26,8 +28,8 @@
                         getImage="ribbon.GetImage"
                         visible="true"
                         size="large"
-                        screentip="点击弹出消息框"
-                        supertip="这是一个超级提示"
+                        screentip="Click to perform action"
+                        supertip="This is a longer description of the action"
                     />
                     <button
                         id="btnIsEnbable"

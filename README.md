@@ -294,14 +294,14 @@ The ```ribbon.xml``` is the configuration file for the ribbon UI in the WPS add-
 
 During the development, to make any changes effective, you need to reload the add-in or refresh the ribbon UI.
 
-It follows the [Office UI XML schema 2006](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/5f3e35d6-70d6-47ee-9e11-f5499559f93a). There are five main types of modules, and each depends on the others in a hierarchical manner. They are **Attribute types**, **Attribute**, **Controls**, **Containers**, and **Root elements**.
+It follows the [[Office UI XML schema 2006]](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/5f3e35d6-70d6-47ee-9e11-f5499559f93a). You can also check the [[Custom UI Offical Document]](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/edc80b05-9169-4ff7-95ee-03af067f35b1) for overall guide. There are five main types of modules, and each depends on the others in a hierarchical manner. They are **Attribute types**, **Attribute**, **Controls**, **Containers**, and **Root elements**.
 
 #### Attribute types
 Defines the atomic data types of UI components. All attribute values ​​are based on these types to ensure data legitimacy.
 |Name|Type|Value|Description|
 |----------------|----|-----|-----------|
 |ST_QID	|xsd:QName	| 1-1024 characters	|Qualified ID (used when sharing controls across plugins, such as ```idQ```)|
-|ST_ID	|xsd:NCName	| 1-1024 characters	|Custom control ID (such as ```id```) or built-in control ID (such as ```idMso```, usage of built-in control IDs can be found in the [ribboncreator2010.de - Excel](https://www.ribboncreator2010.de/Onlinehelp/EN/_2hm0n7htf.htm) or [ribboncreator2010.de - Word](https://www.ribboncreator2010.de/Onlinehelp/EN/_2hm0n9inj.htm))|
+|ST_ID	|xsd:NCName	| 1-1024 characters	|Custom control ID (such as ```id```) or built-in control ID (such as ```idMso```, usage of built-in control IDs can be found in the [[ribboncreator2010.de - Excel]](https://www.ribboncreator2010.de/Onlinehelp/EN/_2hm0n7htf.htm) or [[ribboncreator2010.de - Word]](https://www.ribboncreator2010.de/Onlinehelp/EN/_2hm0n9inj.htm))|
 |ST_UniqueID	|xsd:ID	| 1-1024 characters, unique	|Globally unique control ID (such as id)|
 |ST_Delegate	|xsd:string	| 1-1024 characters	|Callback function name (such as ```onAction```, ```getEnabled```, associated with ribbon.js functions)|
 |ST_Size	|enum (xsd:string)	| only ```normal```/```large```	|Button/menu size (such as large button, small button)|
@@ -313,21 +313,108 @@ Defines the atomic data types of UI components. All attribute values ​​are b
 #### Attribute
 Packaging commonly used attributes into attribute groups (```xsd:attributeGroup```) to avoid repeated definitions is the "attribute template" of controls/containers.
 
+
+**ID Related** 
 |Name|Value|Description|Rules|
 |----|-----|-----------|-----|
-| **ID Related** |
 |AG_IDCustom|	```id``` (ST_UniqueID), ```idQ``` (ST_QID)|	Custom control ID	|Choose one of the two (```id``` is globally unique, ```idQ``` is used to share across plugins)|
 |AG_IDMso|	```idMso``` (ST_ID)|	Reference Office built-in controls	|For example, ```idMso="FileSave"``` references the "Save" button|
 |AG_IDAttributes|	Combination of AG_IDCustom + AG_IDMso + AG_Tag|	Unified control ID configuration	|Must select one ID type (```id```/```idMso```/```idQ```)|
-| **UI Related** |
+
+Example:
+```xml
+<button id="customButton"/>
+```
+
+**UI Related** 
+|Name|Value|Description|Rules|
+|----|-----|-----------|-----|
 |AG_Enabled|	```enabled``` (boolean), ```getEnabled```（ST_Delegate）|	Whether the control is enabled	|Choose one of the two (use ```enabled``` for static configuration, use ```getEnabled``` callback for dynamic)|
 |AG_Visible|	```visible``` (boolean), ```getVisible```（ST_Delegate）|	Whether the control is visible	|Same logic as AG_Enabled|
-|AG_Image|	```image``` (path), ```imageMso``` (built-in image, the list of values could be referred from [Bert Toolkit (with icon preview)](https://bert-toolkit.com/imagemso-list.html) or [Microsoft document](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/fe2124a1-5aaa-4adf-b285-5d58da9d5e2a)), ```getImage``` (callback)|	Control image	|Choose one of the three (use ```image``` for custom image, use ```imageMso``` for built-in image)|
+|AG_Image|	```image``` (path), ```imageMso``` (built-in image, the list of values could be referred from [[Bert Toolkit (with icon preview)]](https://bert-toolkit.com/imagemso-list.html) or [[Microsoft document]](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/fe2124a1-5aaa-4adf-b285-5d58da9d5e2a)), ```getImage``` (callback)|	Control image	|Choose one of the three (use ```image``` for custom image, use ```imageMso``` for built-in image)|
 |AG_Screentip|	```screentip``` (short tip), ```supertip``` (long tip) + corresponding callback|	Mouse hover tip	|For example, ```supertip="Click to save the current document"```|
-| **Layout & Interaction** |
+
+Example:
+```xml
+<button 
+  id="customButton"
+  visible="true"
+  enabled="true"
+  image="customImage.png"
+/>
+```
+or using ST_Delegate to make a dynamic callback
+```xml
+<button 
+  id="customButton"
+  getEnabled="ribbon.OnGetEnabled"
+  getImage="ribbon.GetImage"
+  getVisible="ribbon.OnGetVisible"
+/>
+```
+define the coresponding functions in `components/ribbon.js`.
+```javascript
+function OnGetEnabled(control) {
+  // Custom logic to determine if the control is enabled
+  return true;
+}
+
+function GetImage(control) {
+  // Custom logic to get the control image
+  return "customImage.png";
+}
+
+function OnGetVisible(control) {
+  // Custom logic to determine if the control is visible
+  return true;
+}
+```
+or when you have one function but want to handle multiple controls:
+```javascript
+function OnGetEnabled(control) {
+  const controlID = control.id;
+  switch (controlID) {
+    case "btn1":
+      // Custom logic to determine if the custom button is enabled
+      return true;
+    case "btn2":
+      // Custom logic to determine if the second button is enabled
+      return false;
+    default:
+      return false;
+  }
+  return true;
+}
+```
+When dealing with Tooltips:
+```xml
+<button 
+  id="customButton"
+  screentip="Click to perform action"
+  supertip="This is a longer description of the action"
+/>
+```
+This example would look like
+
+![Tooltip Example](./img/screenshot_2025-09-03_134553.png)
+
+**Layout & Interaction**
+|Name|Value|Description|Rules|
+|----|-----|-----------|-----|
 |AG_PositionAttributes|	```insertAfterMso```/```insertBeforeMso```/```insertAfterQ```/```insertBeforeQ```| Control insertion position| Select one of four options (e.g., ```insertAfterMso="HomeTab"``` inserts after the Home tab).|
 |AG_Action|	```onAction``` (ST_Delegate)| User action callback| such as ```onAction="ButtonClick"``` triggered by a button click (associated with a ribbon.js function).|
 |AG_DropDownAttributes|	```getItemCount```/```getItemLabel```/```sizeString```| Drop-down controls (combo boxes, galleries) |use this to dynamically load drop-down items (e.g., getItemCount returns the number of items in the drop-down).|
+
+Example:
+The `insertAfterMso` controls the position of the tab in the ribbon. The `wpsAddinTab` will come right after the (`开始`) Home tab in the example below.
+```xml
+<tabs>
+  <tab id="wpsAddinTab" label="wps addon test" insertAfterMso="TabHome">
+</tabs>
+```
+
+![Tab Example](./img/screenshot_2025-09-03_141311.png)
+
 
 #### Controls
 Defines all controls that can be used in WPS UI, based on inheritance relationship extension (such as ```CT_Button``` inherits from ```CT_ButtonRegular```)
