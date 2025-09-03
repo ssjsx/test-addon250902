@@ -290,7 +290,9 @@ If you want to remove one of the previous publish. You could done that by runnin
 ## Development
 
 ### ribbon.xml
-The ```ribbon.xml``` is the configuration file for the ribbon UI in the WPS add-in. It defines the structure and behavior of the ribbon, including tabs, groups, and controls (buttons, edit boxes, etc.). This file is essential for customizing the user interface and providing a seamless experience for users.
+The ```ribbon.xml``` is the configuration file for the ribbon UI in the WPS add-in. It defines the structure and behavior of the ribbon, including tabs, groups, and controls (buttons, edit boxes, etc.). This file is essential for customizing the user interface and providing a seamless experience for users. 
+
+During the development, to make any changes effective, you need to reload the add-in or refresh the ribbon UI.
 
 It follows the [Office UI XML schema 2006](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/5f3e35d6-70d6-47ee-9e11-f5499559f93a). There are five main types of modules, and each depends on the others in a hierarchical manner. They are **Attribute types**, **Attribute**, **Controls**, **Containers**, and **Root elements**.
 
@@ -314,18 +316,18 @@ Packaging commonly used attributes into attribute groups (```xsd:attributeGroup`
 |Name|Value|Description|Rules|
 |----|-----|-----------|-----|
 | **ID Related** |
-|AG_IDCustom|	id（ST_UniqueID）、idQ（ST_QID）|	Custom control ID	|Choose one of the two (```id``` is globally unique, ```idQ``` is used to share across plugins)|
-|AG_IDMso|	idMso（ST_ID）|	Reference Office built-in controls	|For example, ```idMso="FileSave"``` references the "Save" button|
+|AG_IDCustom|	```id``` (ST_UniqueID), ```idQ``` (ST_QID)|	Custom control ID	|Choose one of the two (```id``` is globally unique, ```idQ``` is used to share across plugins)|
+|AG_IDMso|	```idMso``` (ST_ID)|	Reference Office built-in controls	|For example, ```idMso="FileSave"``` references the "Save" button|
 |AG_IDAttributes|	Combination of AG_IDCustom + AG_IDMso + AG_Tag|	Unified control ID configuration	|Must select one ID type (```id```/```idMso```/```idQ```)|
 | **UI Related** |
-|AG_Enabled|	enabled (boolean), getEnabled（ST_Delegate）|	Whether the control is enabled	|Choose one of the two (use enabled for static configuration, use getEnabled callback for dynamic)|
-|AG_Visible|	visible (boolean), getVisible（ST_Delegate）|	Whether the control is visible	|Same logic as AG_Enabled|
-|AG_Image|	image (path), imageMso (built-in image), getImage (callback)|	Control image	|Choose one of the three (use image for custom image, use imageMso for built-in image)|
-|AG_Screentip|	screentip (short tip), supertip (long tip) + corresponding callback|	Mouse hover tip	|For example, ```supertip="Click to save the current document"```|
+|AG_Enabled|	```enabled``` (boolean), ```getEnabled```（ST_Delegate）|	Whether the control is enabled	|Choose one of the two (use ```enabled``` for static configuration, use ```getEnabled``` callback for dynamic)|
+|AG_Visible|	```visible``` (boolean), ```getVisible```（ST_Delegate）|	Whether the control is visible	|Same logic as AG_Enabled|
+|AG_Image|	```image``` (path), ```imageMso``` (built-in image), ```getImage``` (callback)|	Control image	|Choose one of the three (use ```image``` for custom image, use ```imageMso``` for built-in image)|
+|AG_Screentip|	```screentip``` (short tip), ```supertip``` (long tip) + corresponding callback|	Mouse hover tip	|For example, ```supertip="Click to save the current document"```|
 | **Layout & Interaction** |
-|AG_PositionAttributes| insertAfterMso/insertBeforeMso/insertAfterQ/insertBeforeQ| Control insertion position| Select one of four options (e.g., ```insertAfterMso="HomeTab"``` inserts after the Home tab).|
-|AG_Action| onAction (ST_Delegate)| User action callback| such as ```onAction="ButtonClick"``` triggered by a button click (associated with a ribbon.js function).|
-|AG_DropDownAttributes| getItemCount/getItemLabel/sizeString| Drop-down controls (combo boxes, galleries) |use this to dynamically load drop-down items (e.g., getItemCount returns the number of items in the drop-down).|
+|AG_PositionAttributes|	```insertAfterMso```/```insertBeforeMso```/```insertAfterQ```/```insertBeforeQ```| Control insertion position| Select one of four options (e.g., ```insertAfterMso="HomeTab"``` inserts after the Home tab).|
+|AG_Action|	```onAction``` (ST_Delegate)| User action callback| such as ```onAction="ButtonClick"``` triggered by a button click (associated with a ribbon.js function).|
+|AG_DropDownAttributes|	```getItemCount```/```getItemLabel```/```sizeString```| Drop-down controls (combo boxes, galleries) |use this to dynamically load drop-down items (e.g., getItemCount returns the number of items in the drop-down).|
 
 #### Controls
 Defines all controls that can be used in WPS UI, based on inheritance relationship extension (such as ```CT_Button``` inherits from ```CT_ButtonRegular```)
