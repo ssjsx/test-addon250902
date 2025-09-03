@@ -1,8 +1,27 @@
 <customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui" onLoad="ribbon.OnAddinLoad">
     <ribbon startFromScratch="false">
+        <qat>
+            <documentControls>
+                <control idMso="CalculateNow" />
+                <control idMso="HyperlinkInsert" />
+            </documentControls>
+        </qat>
         <tabs>
             <tab id="wpsAddinTab" label="wps addon test" insertAfterMso="TabHome">
+                <group id="group" label="Custom Group">
+                    <button id="button" label="Button" imageMso="HappyFace" />
+                    <box id="box" boxStyle="horizontal">
+                        <button id="button1" label="Button 1" imageMso="HappyFace" />
+                        <button id="button2" label="Button 2" imageMso="HappyFace" />
+                    </box>
+                </group>
+                
                 <group id="btnDemoGroup" label="group1">
+                    <comboBox id="comboBox" label="Combo Box">
+                        <item id="item1" label="Item 1" />
+                        <item id="item2" label="Item 2" />
+                        <item id="item3" label="Item 3" />
+                    </comboBox>
                     <!-- 一键求和按钮 -->
                     <button id="btnShowMso" 
                         label="一键求和" 
@@ -11,11 +30,9 @@
                         screentip="快速求和" 
                         supertip="选中区域后，点击自动计算求和结果"
                     />
-                    
                     <!-- 文本输入框 -->
                     <editBox 
                         id="InputBox" 
-                        insertAfterMso="wpsAddinTab"
                         label="输入备注" 
                         maxLength="50"  
                         onChange="InputChanged"  

@@ -403,9 +403,10 @@ This example would look like
 |----|-----|-----------|-----|
 |AG_PositionAttributes|	```insertAfterMso```/```insertBeforeMso```/```insertAfterQ```/```insertBeforeQ```| Control insertion position| Select one of four options (e.g., ```insertAfterMso="HomeTab"``` inserts after the Home tab).|
 |AG_Action|	```onAction``` (ST_Delegate)| User action callback| such as ```onAction="ButtonClick"``` triggered by a button click (associated with a ribbon.js function).|
-|AG_DropDownAttributes|	```getItemCount```/```getItemLabel```/```sizeString```| Drop-down controls (combo boxes, galleries) |use this to dynamically load drop-down items (e.g., getItemCount returns the number of items in the drop-down).|
+|AG_DropDownAttributes|	```getItemCount```/```getItemLabel```/```sizeString```, etc. see [[Dropdown]](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/700e4451-8706-40c5-8d7b-896e4ae21b69)| Drop-down controls (combo boxes, galleries) |use this to dynamically load drop-down items (e.g., getItemCount returns the number of items in the drop-down).|
 
 Example:
+
 The `insertAfterMso` controls the position of the tab in the ribbon. The `wpsAddinTab` will come right after the (`开始`) Home tab in the example below.
 ```xml
 <tabs>
@@ -415,6 +416,46 @@ The `insertAfterMso` controls the position of the tab in the ribbon. The `wpsAdd
 
 ![Tab Example](./img/screenshot_2025-09-03_141311.png)
 
+```xml
+<tabs>
+  <tab id="wpsAddinTab" label="wps addon test" insertAfterMso="TabHome">
+</tabs>
+```
+
+The `onAction` binds the button click action to the function defined in `ribbon.js`.
+```xml
+<button
+  id="customButton"
+  onAction="ribbon.OnAction"
+/>
+```
+
+```javascript
+var ribbon = {
+  OnAction: function(control) {
+    // Custom logic for button action
+  }
+}
+```
+
+Similiarly, if multiple buttons need to share the same action, you can define a single function and use ```switch``` to handle different controls.
+
+```javascript
+var ribbon = {
+  OnAction: function(control) {
+    switch (control.id) {
+      case "btnShowMsg":
+        // Show message box
+        break;
+      case "btnIsEnbable":
+        // Check if enabled
+        break;
+      default:
+        break;
+    }
+  }
+}
+```
 
 #### Controls
 Defines all controls that can be used in WPS UI, based on inheritance relationship extension (such as ```CT_Button``` inherits from ```CT_ButtonRegular```)
@@ -430,6 +471,94 @@ Defines all controls that can be used in WPS UI, based on inheritance relationsh
 |CT_Menu|	CT_MenuRegular|	Drop-down menus|	Contains button / checkbox and other child controls, ```itemSize``` (menu item size)|
 |CT_SplitButton|	CT_SplitButtonRegular|	Split buttons (left click, right drop-down)|	Contains ```<button>```, ```<toggleButton>``` and ```<menu>``` child elements|
 
+Example:
+
+A `button` with description.
+
+![Button Example](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/ms-customui_files/image003.png)
+
+```xml
+<button 
+    id="button" 
+    label="Button" 
+    imageMso="HappyFace"
+    description="This is a verbose description that describes the function of this control in detail." 
+/>
+<!-- or getDescription="ribbon.GetDescription" -->
+```
+A `buttonGroup` specifies a grouping container that groups controls together visually. The child controls are laid out horizontally. 
+
+![Button Group Example](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/ms-customui_files/image009.png)
+
+```xml
+ <buttonGroup id="buttonGroup">
+   <button id="button1" imageMso="Bold" />
+   <button id="button2" imageMso="Italic" />
+   <button id="button3" imageMso="Underline" />
+ </buttonGroup>
+```
+
+A `toggleButton` that can be toggled between the pressed and un-pressed states by the end-user.
+
+![Toggle Button Example](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/ms-customui_files/image029.png)
+
+```xml
+<toggleButton id="toggleButton" label="Toggle Button" />
+```
+
+A `comboBox` that allows a user to input a text string or select one from a list.
+
+![Combo Box Example](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/ms-customui_files/image011.png)
+
+```xml
+<comboBox id="comboBox" label="Combo Box">
+   <item id="item1" label="Item 1" />
+   <item id="item2" label="Item 2" />
+   <item id="item3" label="Item 3" />
+ </comboBox>
+```
+A `menu`
+
+![Menu Example](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/ms-customui_files/image024.png)
+
+```xml
+ <menu id="menu" label="Menu" imageMso="HappyFace" >
+   <button id="button1" label="Button 1" imageMso="FileSave" />
+   <button id="button2" label="Button 2" imageMso="Bold" />
+   <button id="button3" label="Button 3" imageMso="Undo" />
+ </menu>
+```
+or with dynamic menu control
+
+![Dynamic Menu Example](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/ms-customui_files/image016.png)
+```xml
+ <dynamicMenu id="dynamic" label="Dynamic Menu" getContent="ribbon.GetMenuContent" />
+```
+
+A `menu` with title
+
+![Menu with title Example](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/ms-customui_files/image023.png)
+
+```xml
+ <menu id="menu" label="Menu With Title" title="Title String">
+   <button id="button" label="Button" />
+ </menu>
+```
+
+A `splitButton` is composed of either a button or a toggle button, and a drop-down menu. The icon and label shown on the split button come from the button or toggleButton child element.
+
+![Split Button Example](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/ms-customui_files/image028.png)
+
+```xml
+ <splitButton id="splitButton" size="large" >
+  <button id="button" imageMso="HappyFace" label="Split Button" />
+  <menu id="menu">
+   <button id="button1" label="Button 1" />
+   <button id="button2" label="Button 2" />
+  </menu>
+ </splitButton>
+```
+
 #### Containers
 Used to organize *Controls* to form a UI hierarchy (such as "tab → group → control").
 
@@ -440,6 +569,36 @@ Used to organize *Controls* to form a UI hierarchy (such as "tab → group → c
 |CT_Box|	Horizontal/Vertical grouping controls (e.g., arranging multiple buttons in a row)|	Contains any controls (0-1000), ```boxStyle="horizontal"``` (horizontal layout)|
 |CT_Qat|	Quick Access Toolbar (top small toolbar)|	Contains ```<sharedControls>``` (shared across all documents) and ```<documentControls>``` (document-specific)|
 |CT_ContextualTabs|	Contextual tabs (e.g., "Picture Format" when an image is selected)|	Contains ```<tabSet>``` (contextual tab group), ```idMso``` (associated built-in contextual scene)|
+
+Example:
+
+![Group Example](./img/screenshot_2025-09-03_154520.png)
+
+A `group` and `box` combination:
+```xml
+<group id="group" label="Custom Group">
+    <button id="button" label="Button" imageMso="HappyFace" />
+    <box id="box" boxStyle="horizontal">
+      <button id="button1" label="Button 1" imageMso="HappyFace" />
+      <button id="button2" label="Button 2" imageMso="HappyFace" />
+    </box>
+</group>
+```
+
+A `qat` (Quick Access Toolbar), did not work as expected in wps.
+
+![QAT Example](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-customui/ms-customui_files/image014.png)
+
+```xml
+<ribbon>
+    <qat>
+        <documentControls>
+            <control idMso="CalculateNow" />
+            <control idMso="HyperlinkInsert" />
+        </documentControls>
+    </qat>
+</ribbon>
+```
 
 #### Root elements
 The entry of the custom UI XML file. All UI configurations are nested in the root element.
